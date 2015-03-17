@@ -19,6 +19,23 @@ namespace CA.CodingDojos
             Assert.AreEqual("Love All", gameScore);
         }
 
+        [TestCase("ABB", "Fifteen Thirty", "Player A won once and player B won twice and expected score is Fifteen Thirty")]
+        [TestCase("AAB", "Thirty Fifteen", "Player A won twice and player B won once and expected score is Thirty Fifteen")]
+        [TestCase("ABABA", "Forty Thirty", "Player A won thrice and player B won twice and expected score is Forty Thirty")]
+        [TestCase("ABABAB", "Deuce", "Player A won thrice and player B won thrice and expected score is Deuce")]
+        [TestCase("ABABABA", "Advantage A", "Player A won four times and player B won thrice and expected score is Advantage A")]
+        [TestCase("ABABABB", "Advantage B", "Player B won four times and player A won thrice and expected score is Advantage B")]
+        [TestCase("ABABABAA","Game A", "Player A won point after advantage and has won the game and expected score is Game A" )]
+        [TestCase("ABABABBB", "Game B", "Player B won point after advantage and has won the game and expected score is Game B")]
+        [TestCase("ABABABBA", "Deuce", "Duece after advantage and expected score is Deuce")]
+        public void Test_PalyerA_And_PlayerB_Different_Scores(string scoreSequence, string expectedScore, string message)
+        {
+            foreach (char player in scoreSequence)
+                game.WonPoint(player.ToString());
+
+            Assert.AreEqual(expectedScore, game.GameScore, message);
+        }
+
         [Test]
         public void Test_Both_Players_won_point_Return_15_All()
         {

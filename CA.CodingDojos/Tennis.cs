@@ -1,4 +1,6 @@
-﻿namespace CA.CodingDojos
+﻿using System;
+
+namespace CA.CodingDojos
 {
     public class Tennis
     {
@@ -7,7 +9,7 @@
         private const int WinningPoints = 4;
         private int firstPlayerScore;
         private int secondPlayerScore;
-        private readonly string[] scoreTexts = { "Love", "Fifteen", "Thirty", "Forty" };
+        private readonly string[] scoreTexts = { "Love", "Fifteen", "Thirty", "Forty", "Advantage" };
 
         public Tennis(string firstPlayer, string secondPlayer)
         {
@@ -23,7 +25,7 @@
 
         internal void WonPoint(string playerName)
         {
-            if (!HasAnyoneWonTheGame())
+            //if (!HasAnyoneWonTheGame())
             {
                 if (playerName == firstPlayer)
                     firstPlayerScore += 1;
@@ -34,7 +36,25 @@
 
         private bool HasAnyoneWonTheGame()
         {
-            return firstPlayerScore == WinningPoints || secondPlayerScore == WinningPoints;
+            return 
+                (HasPlayerAWon() || HasPlayerBWon()) ||
+                HasAnyPlayerWonAfterAdvantage();
+        }
+
+        private bool HasPlayerBWon()
+        {
+            return (secondPlayerScore == WinningPoints && firstPlayerScore < 3);
+        }
+
+        private bool HasPlayerAWon()
+        {
+            return (firstPlayerScore == WinningPoints && secondPlayerScore < 3);
+        }
+
+        private bool HasAnyPlayerWonAfterAdvantage()
+        {
+            return (Math.Abs(firstPlayerScore - secondPlayerScore) == 2 &&
+                    (firstPlayerScore >= 3 && secondPlayerScore >= 3));
         }
 
         private string CalculateScore()
@@ -45,14 +65,32 @@
             }
             if (IfBothPlayersScoresAreEqual())
             {
+                if (firstPlayerScore >= 3)
+                    return "Deuce";
                 return GetScore(firstPlayerScore) + " All";
             }
-            return GetScore(firstPlayerScore) + " " + GetScore(secondPlayerScore);
+
+
+
+            if (firstPlayerScore <= 3 && secondPlayerScore <= 3)
+                return GetScore(firstPlayerScore) + " " + GetScore(secondPlayerScore);
+
+            return GetWhoHasAdvantage();
+
+        }
+
+        private string GetWhoHasAdvantage()
+        {
+            if (firstPlayerScore > 3)
+                return GetScore(firstPlayerScore) + " " + firstPlayer;
+
+            return GetScore(secondPlayerScore) + " " + secondPlayer;
         }
 
         private string GetWinningPlayerName()
         {
-            if (firstPlayerScore == WinningPoints) return firstPlayer;
+            if (firstPlayerScore > secondPlayerScore) 
+                return firstPlayer;
             return secondPlayer;
         }
 
